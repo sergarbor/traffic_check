@@ -6,6 +6,6 @@ pub struct Cli {
 impl Cli {
     pub fn new(comman: String, value: Option<u8>) -> Self {
         self.command = comman;
-        self.value = value.unwrap_or(5);
+        self.value = value.unwrap_or(5); // default is 5
     }
 }
