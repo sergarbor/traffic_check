@@ -26,26 +26,29 @@ fn capture_packets(n_packets: u8) {
         if cap_counter >= n_packets {
             break;
         }
+        let packet_data: &[u8] = packet.data;
+        let packet_len: u32 = packet.header.len;
         let capture_time = get_readable_time(packet.header.ts.tv_sec.to_string());
-        println!("- {} {:?}", capture_time, packet);
+        println!(
+            "- {} - Len: {} \n {:?}",
+            capture_time, packet_len, packet_data
+        );
         cap_counter += 1;
     }
 }
 
 fn main() {
     let args = Cli::parse();
-    /*
-    let pattern = std::env::args().nth(1).expect("no pattern given");
-    let path = std::env::args().nth(2).expect("no path given");
-    */
 
     println!("Command: {} Value {}", args.command, args.value);
 
+    // If the command is not check we skip
     if args.command != "check" {
         return;
     }
 
     println!("THIS IS THE EXPECTED COMMAND!");
 
+    // Start capturing packets!!
     capture_packets(args.value);
 }
