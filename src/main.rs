@@ -1,7 +1,7 @@
 use clap::Parser;
 use models::Cli;
 use pcap::Device;
-use traffic_check::{get_protocol_from_data, get_readable_time};
+use traffic_check::{bytes_to_protocol, get_readable_time};
 
 use crate::models::{EthernetFrame, IPV4Frame};
 
@@ -31,11 +31,12 @@ fn capture_packets(n_packets: u8) {
         let capture_time = get_readable_time(packet.header.ts.tv_sec.to_string());
 
         println!(
-            "- {} - Len: {} \n {}\n\n",
+            "----------------------------------------\n- {} - Len: {} \n {}\n{}\n\n",
             capture_time,
             packet_len,
             //protocol,
-            ether_header.to_string()
+            ether_header.to_string(),
+            ipv4_header.to_string(),
         );
 
         cap_counter += 1;

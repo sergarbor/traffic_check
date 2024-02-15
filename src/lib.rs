@@ -18,7 +18,7 @@ pub fn get_readable_time(time_stamp: String) -> String {
     newdate.to_string()
 }
 
-pub fn get_protocol_from_byte(byte: u8) -> String {
+pub fn bytes_to_protocol(byte: u8) -> String {
     match byte {
         0x06 => String::from("TCP"),
         0x11 => String::from("UDP"),

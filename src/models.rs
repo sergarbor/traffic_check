@@ -1,6 +1,6 @@
 use clap::Parser;
 use traffic_check::{
-    bytes_to_ethere_type, bytes_to_ip_address, bytes_to_mac_address, get_protocol_from_byte,
+    bytes_to_ethere_type, bytes_to_ip_address, bytes_to_mac_address, bytes_to_protocol,
 };
 
 /* -------------------------- APP PARAMS PARSER -------------------------- */
@@ -80,7 +80,7 @@ impl IPV4Frame {
             "Dest. address: {}, Source address: {}, IP type: {}",
             bytes_to_ip_address(&self.dest_address),
             bytes_to_ip_address(&self.src_address),
-            get_protocol_from_byte(self.protocol),
+            bytes_to_protocol(self.protocol),
         );
         ret
     }
