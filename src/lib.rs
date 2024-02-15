@@ -1,4 +1,9 @@
 use chrono::prelude::*;
+use std::convert::TryInto;
+
+pub fn slice_to_num(buff: &[u8]) -> u32 {
+    u32::from_ne_bytes(buff.try_into().unwrap())
+}
 
 pub fn get_readable_time(time_stamp: String) -> String {
     // Convert the timestamp string into an i64
@@ -10,25 +15,47 @@ pub fn get_readable_time(time_stamp: String) -> String {
     // Format the datetime how you want
     let newdate = datetime.format("%Y-%m-%d %H:%M:%S");
     // Print the newly formatted date and time
-    return newdate.to_string();
+    newdate.to_string()
 }
 
-pub fn get_protocol_from_data(packet_data: &[u8]) -> String {
-    let prot_data = packet_data.get(9);
-    let protocol: String;
-    match prot_data {
-        Some(v) if *v == 6 => {
-            protocol = String::from("TCP");
-        }
-        Some(v) if *v == 17 => {
-            protocol = String::from("UDP");
-        }
-        Some(_) => {
-            protocol = String::from("UNKNOWN");
-        }
-        None => {
-            protocol = String::from("NONE");
-        }
+pub fn get_protocol_from_byte(byte: u8) -> String {
+    match byte {
+        0x06 => String::from("TCP"),
+        0x11 => String::from("UDP"),
+        _ => String::from("UNKNOWN"),
     }
-    return protocol;
+}
+
+/// Transforms an array of 6 bytes into a MAC address
+pub fn bytes_to_mac_address(address_bytes: &[u8]) -> String {
+    let address: String = format!(
+        "{:02x}:{:02x}:{:02x}:{:02x}:{:02x}:{:02x}",
+        address_bytes[0],
+        address_bytes[1],
+        address_bytes[2],
+        address_bytes[3],
+        address_bytes[4],
+        address_bytes[5]
+    );
+    address
+}
+
+/// Transforms an array of 2 bytes into a ethernet type
+pub fn bytes_to_ethere_type(address_bytes: &[u8]) -> String {
+    match address_bytes {
+        [0x08, 0x00] => String::from("IPv4"),
+        [0x08, 0x06] => String::from("ARP"),
+        [0x86, 0xDD] => String::from("IPv6"),
+        [0x81, 0x00] => String::from("VLAN Tagged Frame"),
+        [0x88, 0x8E] => String::from("IEEE 802.1X Authentication"),
+        [0x88, 0xCC] => String::from("LLDP"),
+        _ => String::from("Unknown EtherType"),
+    }
+}
+
+pub fn bytes_to_ip_address(address_bytes: &[u8; 4]) -> String {
+    format!(
+        "{}.{}.{}.{}",
+        address_bytes[0], address_bytes[1], address_bytes[2], address_bytes[3]
+    )
 }
