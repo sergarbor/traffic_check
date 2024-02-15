@@ -48,9 +48,12 @@ impl EthernetFrame {
 
 /* -------------------------- IPV4 PARSER -------------------------- */
 pub struct IPV4Frame {
+    /* Basic fields */
     pub dest_address: [u8; 4],
     pub src_address: [u8; 4],
     pub protocol: u8,
+    /* Extended fields */
+    // pub version:
 }
 
 impl IPV4Frame {
@@ -61,7 +64,7 @@ impl IPV4Frame {
         let mut src_address = [0; 4];
         src_address.copy_from_slice(&ether_bytes[12..16]);
 
-        let mut protocol: u8;
+        let protocol: u8;
         if let Some(&byte) = ether_bytes.get(9) {
             protocol = byte;
         } else {

@@ -20,7 +20,11 @@ pub fn get_readable_time(time_stamp: String) -> String {
 
 pub fn bytes_to_protocol(byte: u8) -> String {
     match byte {
+        0x01 => String::from("ICMP"),
+        0x02 => String::from("IGMP"),
         0x06 => String::from("TCP"),
+        0x29 => String::from("IPv6"),
+        0x59 => String::from("OSPF"),
         0x11 => String::from("UDP"),
         _ => String::from("UNKNOWN"),
     }
@@ -47,6 +51,7 @@ pub fn bytes_to_ethere_type(address_bytes: &[u8]) -> String {
         [0x08, 0x06] => String::from("ARP"),
         [0x86, 0xDD] => String::from("IPv6"),
         [0x81, 0x00] => String::from("VLAN Tagged Frame"),
+        [0x88, 0x64] => String::from("PPPoE"),
         [0x88, 0x8E] => String::from("IEEE 802.1X Authentication"),
         [0x88, 0xCC] => String::from("LLDP"),
         _ => String::from("Unknown EtherType"),
