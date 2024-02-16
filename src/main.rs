@@ -4,6 +4,7 @@ use traffic_check::{bytes_to_ethere_type, get_readable_time};
 
 mod models {
     // Import the structs from each model file
+    pub mod arp_frame;
     pub mod cli;
     pub mod ethernet_frame;
     pub mod ipv4_frame;
@@ -24,10 +25,6 @@ fn capture_packets(n_packets: u8) {
         let ether_bytes: &[u8] = &packet_data;
         let ether_header = models::ethernet_frame::EthernetFrame::new(ether_bytes);
 
-        // get the IPV4 layer info
-        let ipv4_bytes: &[u8] = &packet_data[14..];
-        let ipv4_header = models::ipv4_frame::IPV4Frame::new(ipv4_bytes);
-
         //let protocol: String = get_protocol_from_data(packet_data);
         let capture_time = get_readable_time(packet.header.ts.tv_sec.to_string());
 
@@ -35,12 +32,24 @@ fn capture_packets(n_packets: u8) {
 
         let mut ipv4_info = String::from("");
         if bytes_to_ethere_type(&ether_header.ether_type) == "IPv4" {
+            // get the IPV4 layer info
+            let ipv4_bytes: &[u8] = &packet_data[14..];
+            let ipv4_header = models::ipv4_frame::IPV4Frame::new(ipv4_bytes);
             ipv4_info = ipv4_header.to_string();
+        }
+
+        let mut arp_info = String::from("");
+        if bytes_to_ethere_type(&ether_header.ether_type) == "ARP" {
+            // get the ARP layer info
+            let arp_bytes: &[u8] = &packet_data[14..];
+            let arp_header = models::arp_frame::ARPFrame::new(arp_bytes);
+            arp_info = arp_header.to_string();
         }
 
         println!(
             "----------------------------------------
             - {} - Len: {}
+            \t{}
             \t{}
             \t{}",
             capture_time,
@@ -48,6 +57,7 @@ fn capture_packets(n_packets: u8) {
             //protocol,
             ether_info,
             ipv4_info,
+            arp_info,
         );
 
         cap_counter += 1;
