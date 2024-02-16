@@ -1,12 +1,13 @@
 use clap::Parser;
-use models::Cli;
 use pcap::Device;
-use traffic_check::get_readable_time;
+use traffic_check::{bytes_to_ethere_type, get_readable_time};
 
-use crate::models::{EthernetFrame, IPV4Frame};
-
-pub mod models;
-
+mod models {
+    // Import the structs from each model file
+    pub mod cli;
+    pub mod ethernet_frame;
+    pub mod ipv4_frame;
+}
 fn capture_packets(n_packets: u8) {
     let mut cap = Device::lookup().unwrap().unwrap().open().unwrap();
     let mut cap_counter = 0;
@@ -21,22 +22,32 @@ fn capture_packets(n_packets: u8) {
 
         // Get the ethernet layer info
         let ether_bytes: &[u8] = &packet_data;
-        let ether_header: EthernetFrame = EthernetFrame::new(ether_bytes);
+        let ether_header = models::ethernet_frame::EthernetFrame::new(ether_bytes);
 
         // get the IPV4 layer info
         let ipv4_bytes: &[u8] = &packet_data[14..];
-        let ipv4_header: IPV4Frame = IPV4Frame::new(ipv4_bytes);
+        let ipv4_header = models::ipv4_frame::IPV4Frame::new(ipv4_bytes);
 
         //let protocol: String = get_protocol_from_data(packet_data);
         let capture_time = get_readable_time(packet.header.ts.tv_sec.to_string());
 
+        let ether_info = ether_header.to_string();
+
+        let mut ipv4_info = String::from("");
+        if bytes_to_ethere_type(&ether_header.ether_type) == "IPv4" {
+            ipv4_info = ipv4_header.to_string();
+        }
+
         println!(
-            "----------------------------------------\n- {} - Len: {} \n\t{}\n\t{}\n\n",
+            "----------------------------------------
+            - {} - Len: {}
+            \t{}
+            \t{}",
             capture_time,
             packet_len,
             //protocol,
-            ether_header.to_string(),
-            ipv4_header.to_string(),
+            ether_info,
+            ipv4_info,
         );
 
         cap_counter += 1;
@@ -44,7 +55,7 @@ fn capture_packets(n_packets: u8) {
 }
 
 fn main() {
-    let args = Cli::parse();
+    let args = models::cli::Cli::parse();
 
     println!("Command: {} Value {}", args.command, args.value);
 
