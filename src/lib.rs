@@ -90,6 +90,19 @@ pub fn bytes_to_arp_protocol_type(protocol_bytes: &[u8]) -> String {
     }
 }
 
+/// Transforms an array of 2 bytes into a arp protocol type (PTYPE)
+pub fn bytes_to_arp_operation(operation_bytes: &[u8]) -> String {
+    match operation_bytes {
+        [0x00, 0x01] => String::from("ARP Request"),
+        [0x00, 0x02] => String::from("ARP Reply"),
+        [0x00, 0x03] => String::from("RARP Request"),
+        [0x00, 0x04] => String::from("RARP Reply"),
+        [0x00, 0x08] => String::from("InARP Request"),
+        [0x00, 0x09] => String::from("InARP Reply"),
+        _ => String::from("Unknown ARP Operation"),
+    }
+}
+
 pub fn bytes_to_ip_address(address_bytes: &[u8; 4]) -> String {
     format!(
         "{}.{}.{}.{}",

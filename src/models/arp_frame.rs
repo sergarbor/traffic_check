@@ -1,4 +1,7 @@
-use traffic_check::{bytes_to_arp_hardware_type, bytes_to_arp_protocol_type, bytes_to_mac_address};
+use traffic_check::{
+    bytes_to_arp_hardware_type, bytes_to_arp_operation, bytes_to_arp_protocol_type,
+    bytes_to_mac_address,
+};
 
 pub struct ARPFrame {
     pub hardware_type: [u8; 2],
@@ -64,11 +67,12 @@ impl ARPFrame {
 
     pub fn to_string(&self) -> String {
         let ret: String = format!(
-            "HTYPE: {}, PTYPE: {}, Sender Addr: {}, Target Addr: {}",
+            "HTYPE: {}, PTYPE: {}, Sender Addr: {}, Target Addr: {}, Op: {}",
             bytes_to_arp_hardware_type(&self.hardware_type),
             bytes_to_arp_protocol_type(&self.protocol_type),
             bytes_to_mac_address(&self.sender_hardware_address),
             bytes_to_mac_address(&self.target_hardware_address),
+            bytes_to_arp_operation(&self.operation),
         );
         ret
     }
