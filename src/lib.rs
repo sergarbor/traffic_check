@@ -58,6 +58,38 @@ pub fn bytes_to_ethere_type(address_bytes: &[u8]) -> String {
     }
 }
 
+/// Transforms an array of 2 bytes into a arp hardwate type (HTYPE)
+pub fn bytes_to_arp_hardware_type(hardware_bytes: &[u8]) -> String {
+    match hardware_bytes {
+        [0x00, 0x01] => String::from("Ethernet (MAC) Address"),
+        [0x00, 0x06] => String::from("IEEE 802 Networks"),
+        [0x00, 0x0F] => String::from("Serial Line"),
+        [0x00, 0x16] => String::from("Frame Relay"),
+        [0x00, 0x19] => String::from("ATM"),
+        [0x00, 0x1C] => String::from("HDLC"),
+        [0x00, 0x24] => String::from("IEEE 1394 (FireWire)"),
+        [0x00, 0x27] => String::from("InfiniBand"),
+        [0x00, 0x3F] => String::from("Bluetooth"),
+        [0x00, 0x42] => String::from("VLANs"),
+        [0x00, 0x43] => String::from("VPLS"),
+        [0x00, 0x81] => String::from("Zigbee"),
+        _ => String::from("Unknown HTYPE"),
+    }
+}
+
+/// Transforms an array of 2 bytes into a arp protocol type (PTYPE)
+pub fn bytes_to_arp_protocol_type(protocol_bytes: &[u8]) -> String {
+    match protocol_bytes {
+        [0x08, 0x00] => String::from("IPv4"),
+        [0x08, 0x06] => String::from("ARP"),
+        [0x86, 0xDD] => String::from("IPv6"),
+        [0x80, 0x35] => String::from("RARP"),
+        [0x80, 0x9B] => String::from("Appletalk"),
+        [0x80, 0x9D] => String::from("Appletalk ARP"),
+        _ => String::from("Unknown PTYPE"),
+    }
+}
+
 pub fn bytes_to_ip_address(address_bytes: &[u8; 4]) -> String {
     format!(
         "{}.{}.{}.{}",
