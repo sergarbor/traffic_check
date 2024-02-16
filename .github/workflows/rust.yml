@@ -32,11 +32,11 @@ jobs:
     - name: Check test coverage
       run: |
         cargo install cargo-tarpaulin
-        cargo tarpaulin --out Xml
+        cargo tarpaulin --out Xml --output-dir=target
 
     - name: Check coverage threshold
       run: |
-        coverage=$(xmlstarlet sel -t -v "sum(//coverage)" coverage.xml)
+        coverage=$(xmlstarlet sel -t -v "sum(//coverage)" target/coverage.xml)
         threshold=50
         if [ "$coverage" -lt "$threshold" ]; then
           echo "Coverage is below $threshold%. Please increase test coverage before merging."
