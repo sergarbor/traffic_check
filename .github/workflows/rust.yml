@@ -25,3 +25,8 @@ jobs:
 
     - name: Run tests
       run: cargo test --verbose
+
+    - name: Check test coverage
+      run: |
+        cargo install cargo-tarpaulin
+        cargo tarpaulin --out Xml
