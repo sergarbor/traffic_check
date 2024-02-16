@@ -46,3 +46,12 @@ fn test_bytes_to_arp_operation() {
     let date_str = traffic_check::bytes_to_arp_operation(&operation_bytes);
     assert_eq!(date_str, expected_time);
 }
+
+#[test]
+fn test_bytes_to_ip_address() {
+    let address_bytes = [0xC0, 0xA8, 0x01, 0x0A];
+    let expected_time: String = String::from("192.168.1.10");
+
+    let date_str = traffic_check::bytes_to_ip_address(&address_bytes);
+    assert_eq!(date_str, expected_time);
+}
