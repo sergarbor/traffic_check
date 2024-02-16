@@ -11,15 +11,15 @@ pub struct IPV4Frame {
 }
 
 impl IPV4Frame {
-    pub fn new(ether_bytes: &[u8]) -> Self {
+    pub fn new(ipv4_bytes: &[u8]) -> Self {
         let mut dest_address = [0; 4];
-        dest_address.copy_from_slice(&ether_bytes[16..20]);
+        dest_address.copy_from_slice(&ipv4_bytes[16..20]);
 
         let mut src_address = [0; 4];
-        src_address.copy_from_slice(&ether_bytes[12..16]);
+        src_address.copy_from_slice(&ipv4_bytes[12..16]);
 
         let protocol: u8;
-        if let Some(&byte) = ether_bytes.get(9) {
+        if let Some(&byte) = ipv4_bytes.get(9) {
             protocol = byte;
         } else {
             protocol = 0x00;
