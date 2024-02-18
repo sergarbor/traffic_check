@@ -106,3 +106,84 @@ fn test_bytes_to_arp_protocol_type() {
     let operation = traffic_check::bytes_to_arp_protocol_type(&operation_bytes);
     assert_eq!(operation, expected_time);
 }
+
+#[test]
+fn test_bytes_to_arp_hardware_type() {
+    let operation_bytes = [0x00, 0x01];
+    let expected_time: String = String::from("Ethernet (MAC) Address");
+
+    let operation = traffic_check::bytes_to_arp_hardware_type(&operation_bytes);
+    assert_eq!(operation, expected_time);
+
+    let operation_bytes = [0x00, 0x06];
+    let expected_time: String = String::from("IEEE 802 Networks");
+
+    let operation = traffic_check::bytes_to_arp_hardware_type(&operation_bytes);
+    assert_eq!(operation, expected_time);
+
+    let operation_bytes = [0x00, 0x0F];
+    let expected_time: String = String::from("Serial Line");
+
+    let operation = traffic_check::bytes_to_arp_hardware_type(&operation_bytes);
+    assert_eq!(operation, expected_time);
+
+    let operation_bytes = [0x00, 0x16];
+    let expected_time: String = String::from("Frame Relay");
+
+    let operation = traffic_check::bytes_to_arp_hardware_type(&operation_bytes);
+    assert_eq!(operation, expected_time);
+
+    let operation_bytes = [0x00, 0x19];
+    let expected_time: String = String::from("ATM");
+
+    let operation = traffic_check::bytes_to_arp_hardware_type(&operation_bytes);
+    assert_eq!(operation, expected_time);
+
+    let operation_bytes = [0x00, 0x1C];
+    let expected_time: String = String::from("HDLC");
+
+    let operation = traffic_check::bytes_to_arp_hardware_type(&operation_bytes);
+    assert_eq!(operation, expected_time);
+
+    let operation_bytes = [0x00, 0x24];
+    let expected_time: String = String::from("IEEE 1394 (FireWire)");
+
+    let operation = traffic_check::bytes_to_arp_hardware_type(&operation_bytes);
+    assert_eq!(operation, expected_time);
+
+    let operation_bytes = [0x00, 0x27];
+    let expected_time: String = String::from("InfiniBand");
+
+    let operation = traffic_check::bytes_to_arp_hardware_type(&operation_bytes);
+    assert_eq!(operation, expected_time);
+
+    let operation_bytes = [0x00, 0x3F];
+    let expected_time: String = String::from("Bluetooth");
+
+    let operation = traffic_check::bytes_to_arp_hardware_type(&operation_bytes);
+    assert_eq!(operation, expected_time);
+
+    let operation_bytes = [0x00, 0x42];
+    let expected_time: String = String::from("VLANs");
+
+    let operation = traffic_check::bytes_to_arp_hardware_type(&operation_bytes);
+    assert_eq!(operation, expected_time);
+
+    let operation_bytes = [0x00, 0x43];
+    let expected_time: String = String::from("VPLS");
+
+    let operation = traffic_check::bytes_to_arp_hardware_type(&operation_bytes);
+    assert_eq!(operation, expected_time);
+
+    let operation_bytes = [0x00, 0x81];
+    let expected_time: String = String::from("Zigbee");
+
+    let operation = traffic_check::bytes_to_arp_hardware_type(&operation_bytes);
+    assert_eq!(operation, expected_time);
+
+    let operation_bytes = [0xFF, 0xFF];
+    let expected_time: String = String::from("Unknown HTYPE");
+
+    let operation = traffic_check::bytes_to_arp_hardware_type(&operation_bytes);
+    assert_eq!(operation, expected_time);
+}
