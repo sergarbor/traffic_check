@@ -45,8 +45,8 @@ pub fn bytes_to_mac_address(address_bytes: &[u8]) -> String {
 }
 
 /// Transforms an array of 2 bytes into a ethernet type
-pub fn bytes_to_ethere_type(address_bytes: &[u8]) -> String {
-    match address_bytes {
+pub fn bytes_to_ethere_type(type_bytes: &[u8]) -> String {
+    match type_bytes {
         [0x08, 0x00] => String::from("IPv4"),
         [0x08, 0x06] => String::from("ARP"),
         [0x86, 0xDD] => String::from("IPv6"),
@@ -108,4 +108,8 @@ pub fn bytes_to_ip_address(address_bytes: &[u8; 4]) -> String {
         "{}.{}.{}.{}",
         address_bytes[0], address_bytes[1], address_bytes[2], address_bytes[3]
     )
+}
+
+pub fn is_allowed_protocol(protocols: Vec<String>, type_bytes: &[u8]) -> bool {
+    protocols.contains(&bytes_to_ethere_type(&type_bytes)) || protocols.contains(&"ALL".to_string())
 }

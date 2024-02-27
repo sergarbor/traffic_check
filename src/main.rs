@@ -1,6 +1,6 @@
 use clap::Parser;
 use pcap::Device;
-use traffic_check::{bytes_to_ethere_type, get_readable_time};
+use traffic_check::{bytes_to_ethere_type, get_readable_time, is_allowed_protocol};
 
 mod models {
     // Import the structs from each model file
@@ -9,7 +9,7 @@ mod models {
     pub mod ethernet_frame;
     pub mod ipv4_frame;
 }
-fn capture_packets(n_packets: u8) {
+fn capture_packets(n_packets: u8, protocols: Vec<String>) {
     let mut cap = Device::lookup().unwrap().unwrap().open().unwrap();
     let mut cap_counter = 0;
 
@@ -29,6 +29,11 @@ fn capture_packets(n_packets: u8) {
         let capture_time = get_readable_time(packet.header.ts.tv_sec.to_string());
 
         let ether_info = ether_header.to_string();
+
+        // check that the protocol is in the list
+        if !is_allowed_protocol(protocols.clone(), &ether_header.ether_type) {
+            continue;
+        }
 
         let mut ipv4_info = String::from("");
         if bytes_to_ethere_type(&ether_header.ether_type) == "IPv4" {
@@ -66,16 +71,32 @@ fn capture_packets(n_packets: u8) {
 
 fn main() {
     let args = models::cli::Cli::parse();
+    let mut protocols: Vec<String> = Vec::new();
+    // We use all as default
+    protocols.push(String::from("ALL"));
 
-    println!("Command: {} Value {}", args.command, args.value);
-
-    // If the command is not check we skip
-    if args.command != "check" {
-        return;
+    match args {
+        models::cli::Cli::Save(save_args) => {
+            if let Some(filename) = save_args.filename {
+                println!("Save command with filename: {}", filename);
+            } else {
+                println!("Save command without filename");
+            }
+        }
+        models::cli::Cli::Show => {
+            println!("Show command");
+        }
+        models::cli::Cli::Output(output_args) => {
+            println!("Output command with filename: {}", output_args.filename);
+        }
+        models::cli::Cli::Protocols(protocols_args) => {
+            protocols = protocols_args.protocols;
+            println!("Protocols command with protocols: {:?}", protocols);
+        }
     }
 
     println!("THIS IS THE EXPECTED COMMAND!");
 
     // Start capturing packets!!
-    capture_packets(args.value);
+    capture_packets(100, protocols);
 }
