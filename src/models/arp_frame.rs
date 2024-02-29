@@ -65,6 +65,17 @@ impl ARPFrame {
         }
     }
 
+    pub fn to_scann_string(&self) -> String {
+        let ret: String = format!(
+            "IP: {:?}, MAC: {:?}",
+            //bytes_to_ip_address(&self.sender_protocol_address),
+            //bytes_to_mac_address(&self.sender_hardware_address),
+            bytes_to_ip_address(&self.target_protocol_address),
+            bytes_to_mac_address(&self.target_hardware_address),
+        );
+        ret
+    }
+
     pub fn to_string(&self) -> String {
         let ret: String = format!(
             "HTYPE: {}, PTYPE: {}, Sender Addr: {}, Target Addr: {}, Op: {}, SPA: {}, TPA: {}",
