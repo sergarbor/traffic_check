@@ -3,6 +3,21 @@ use traffic_check::{
     bytes_to_ip_address, bytes_to_mac_address,
 };
 
+pub struct ARPIinfo {
+    pub hardware_type: String,
+    pub protocol_type: String,
+    pub hardware_address_len: String,
+    pub protocol_address_len: String,
+    pub operation: String,
+    pub sender_hardware_address: String,
+    pub sender_protocol_address: String,
+    pub target_hardware_address: String,
+    pub target_protocol_address: String,
+}
+impl ARPIinfo {
+    pub fn new(arp_bytes: &[u8]) -> Self {}
+}
+
 pub struct ARPFrame {
     pub hardware_type: [u8; 2],
     pub protocol_type: [u8; 2],
@@ -13,6 +28,7 @@ pub struct ARPFrame {
     pub sender_protocol_address: [u8; 4],
     pub target_hardware_address: [u8; 6],
     pub target_protocol_address: [u8; 4],
+    pub arp_info: ARPIinfo,
 }
 
 impl ARPFrame {
@@ -52,6 +68,8 @@ impl ARPFrame {
         let mut target_protocol_address = [0; 4];
         target_protocol_address.copy_from_slice(&arp_bytes[24..28]);
 
+        let arp_info =
+
         Self {
             hardware_type,
             protocol_type,
@@ -67,7 +85,7 @@ impl ARPFrame {
 
     pub fn to_scann_string(&self) -> String {
         let ret: String = format!(
-            "IP: {:?}, MAC: {:?}",
+            "IP: {:?},\tMAC: {:?}",
             //bytes_to_ip_address(&self.sender_protocol_address),
             //bytes_to_mac_address(&self.sender_hardware_address),
             bytes_to_ip_address(&self.target_protocol_address),

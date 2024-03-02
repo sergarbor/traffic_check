@@ -1,4 +1,3 @@
-
 /* -------------------------- APP PARAMS PARSER -------------------------- */
 /*
 #[derive(Parser)]
@@ -18,6 +17,7 @@ pub enum Cli {
     Show,
     Output(OutputArgs),
     Protocols(ProtocolsArgs),
+    Arpscann(ARPScannArgs),
     // Add more commands as needed
 }
 
@@ -35,4 +35,10 @@ pub struct OutputArgs {
 #[derive(Parser)]
 pub struct ProtocolsArgs {
     pub protocols: Vec<String>,
+}
+
+#[derive(Parser)]
+pub struct ARPScannArgs {
+    #[clap(long, short, action)]
+    pub arpscann: bool,
 }

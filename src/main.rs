@@ -1,5 +1,6 @@
 use clap::Parser;
 use pcap::{Capture, Device};
+use std::collections::HashSet;
 use traffic_check::{bytes_to_ethere_type, get_readable_time, is_allowed_protocol};
 
 mod models {
@@ -79,6 +80,8 @@ fn arp_scann() {
     let mut cap_counter = 0;
     let mut protocols: Vec<String> = Vec::new();
     let n_packets = 30;
+    let mut addresses = HashSet::new();
+
     protocols.push(String::from("ARP"));
 
     while let Ok(packet) = cap.next_packet() {
@@ -100,9 +103,15 @@ fn arp_scann() {
         let arp_header = models::arp_frame::ARPFrame::new(arp_bytes);
         let mut arp_info = String::from("");
         arp_info = arp_header.to_scann_string();
+        addresses.insert(arp_info.clone());
         println!(" {}", arp_info);
 
         cap_counter += 1
+    }
+
+    println!("- ARP Scann Finished:");
+    for add in &addresses {
+        println!("-\t{add}");
     }
 }
 
@@ -125,6 +134,11 @@ fn main() {
         models::cli::Cli::Output(output_args) => {
             println!("Output command with filename: {}", output_args.filename);
         }
+        models::cli::Cli::Arpscann(arpscann_args) => {
+            println!("- ARP Scann -");
+            arp_scann();
+            return;
+        }
         models::cli::Cli::Protocols(protocols_args) => {
             protocols = protocols_args.protocols;
             if protocols.is_empty() {
@@ -137,6 +151,5 @@ fn main() {
     println!("THIS IS THE EXPECTED COMMAND!");
 
     // Start capturing packets!!
-    //capture_packets(100, protocols);
-    arp_scann();
+    capture_packets(100, protocols);
 }
